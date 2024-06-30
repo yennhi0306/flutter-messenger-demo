@@ -52,11 +52,11 @@ class HomeView extends StatelessWidget {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: <Widget>[
-                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Yen Nhi'),
-                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Thanh Tuyen'),
-                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Thanh Truc'),
-                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Tran Long Phu'),
-                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Le Duc Tien'),
+                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Nhi'),
+                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Tuyen'),
+                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Truc'),
+                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Phu'),
+                buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Tien'),
                 buildProfileAvatar('https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', 'Mom'),
               ],
             ),
