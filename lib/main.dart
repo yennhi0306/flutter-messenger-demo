@@ -64,10 +64,10 @@ class HomeView extends StatelessWidget {
           Expanded(
             child: ListView(
               children: <Widget>[
-                buildConversationTile('Yen Nhi', 'ok??', '9:30 am', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png'),
-                buildConversationTile('Tran Long Phu', 'You sent a sticker.', 'Mon', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png'),
-                buildConversationTile('Le Duc Tien', 'Ok?', 'Mon', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png'),
-                buildConversationTile('Mom', '?', 'Sun', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png'),
+                buildConversationTile('Yen Nhi', 'ok??', '9:30 am', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', context),
+                buildConversationTile('Tran Long Phu', 'You sent a sticker.', 'Mon', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', context),
+                buildConversationTile('Le Duc Tien', 'Ok?', 'Mon', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', context),
+                buildConversationTile('Mom', '?', 'Sun', 'https://cdn.pixabay.com/photo/2016/11/18/23/38/child-1837375_1280.png', context),
               ],
             ),
           ),
@@ -94,7 +94,7 @@ class HomeView extends StatelessWidget {
   }
 
   Widget buildConversationTile(
-      String name, String message, String time, String imageUrl) {
+      String name, String message, String time, String imageUrl, BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(imageUrl),
@@ -141,8 +141,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  AppTheme theme = LightTheme();
-  bool isDarkTheme = false;
   final _chatController = ChatController(
     initialMessageList: [],
     scrollController: ScrollController(),
@@ -190,86 +188,26 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       body: ChatView(
         chatController: _chatController,
-        onSendTap: _onSendTap,
+        onSendTap: (message, replyMessage, messageType) {
+          _onSendTap(message);
+        },
         featureActiveConfig: const FeatureActiveConfig(
           lastSeenAgoBuilderVisibility: true,
           receiptsBuilderVisibility: true,
         ),
         chatViewState: ChatViewState.hasMessages,
-        chatViewStateConfig: ChatViewStateConfiguration(
-          loadingWidgetConfig: ChatViewStateWidgetConfiguration(
-            loadingIndicatorColor: theme.outgoingChatBubbleColor,
-          ),
-          onReloadButtonTap: () {},
-        ),
-        typeIndicatorConfig: TypeIndicatorConfiguration(
-          flashingCircleBrightColor: theme.flashingCircleBrightColor,
-          flashingCircleDarkColor: theme.flashingCircleDarkColor,
-        ),
         appBar: ChatViewAppBar(
-          elevation: theme.elevation,
-          backGroundColor: theme.appBarColor,
           profilePicture: widget.imageUrl,
-          backArrowColor: theme.backArrowColor,
           chatTitle: widget.name,
           chatTitleTextStyle: TextStyle(
-            color: theme.appBarTitleTextStyle,
             fontWeight: FontWeight.bold,
             fontSize: 18,
             letterSpacing: 0.25,
           ),
           userStatus: "online",
           userStatusTextStyle: const TextStyle(color: Colors.grey),
-          actions: [
-            IconButton(
-              onPressed: _onThemeIconTap,
-              icon: Icon(
-                isDarkTheme
-                    ? Icons.brightness_4_outlined
-                    : Icons.dark_mode_outlined,
-                color: theme.themeIconColor,
-              ),
-            ),
-            IconButton(
-              tooltip: 'Toggle TypingIndicator',
-              onPressed: _showHideTypingIndicator,
-              icon: Icon(
-                Icons.keyboard,
-                color: theme.themeIconColor,
-              ),
-            ),
-            IconButton(
-              tooltip: 'Simulate Message receive',
-              onPressed: receiveMessage,
-              icon: Icon(
-                Icons.supervised_user_circle,
-                color: theme.themeIconColor,
-              ),
-            ),
-          ],
-        ),
-        chatBackgroundConfig: ChatBackgroundConfiguration(
-          messageTimeIconColor: theme.messageTimeIconColor,
-          messageTimeTextStyle: TextStyle(color: theme.messageTimeTextColor),
-          defaultGroupSeparatorConfig: DefaultGroupSeparatorConfiguration(
-            textStyle: TextStyle(
-              color: theme.chatHeaderColor,
-              fontSize: 17,
-            ),
-          ),
-          backgroundColor: theme.backgroundColor,
         ),
         sendMessageConfig: SendMessageConfiguration(
-          imagePickerIconsConfig: ImagePickerIconsConfiguration(
-            cameraIconColor: theme.cameraIconColor,
-            galleryIconColor: theme.galleryIconColor,
-          ),
-          replyMessageColor: theme.replyMessageColor,
-          defaultSendButtonColor: theme.sendButtonColor,
-          replyDialogColor: theme.replyDialogColor,
-          replyTitleColor: theme.replyTitleColor,
-          textFieldBackgroundColor: theme.textFieldBackgroundColor,
-          closeIconColor: theme.closeIconColor,
           textFieldConfig: TextFieldConfiguration(
             onMessageTyping: (status) {
               /// Do with status
@@ -277,7 +215,6 @@ class _ChatScreenState extends State<ChatScreen> {
             },
             compositionThresholdTime: const Duration(seconds: 1),
             textStyle: TextStyle(
-              color: theme.textFieldTextColor,
               fontSize: 16,
             ),
           ),
@@ -292,24 +229,9 @@ class _ChatScreenState extends State<ChatScreen> {
       id: DateTime.now().toString(),
       message: message,
       createdAt: DateTime.now(),
-      sendBy: currentUser.id,
-      sendTo: '2', // Change this to the id of the recipient
+      sentBy: currentUser.id,
     );
     _chatController.addMessage(messageObject);
-  }
-
-  void _onThemeIconTap() {
-    setState(() {
-      isDarkTheme = !isDarkTheme;
-      theme = isDarkTheme ? DarkTheme() : LightTheme();
-    });
-  }
-
-  void _showHideTypingIndicator() {
-    setState(() {
-      _chatController.typingIndicatorConfig.showIndicator =
-      !_chatController.typingIndicatorConfig.showIndicator;
-    });
   }
 
   void receiveMessage() {
@@ -318,8 +240,7 @@ class _ChatScreenState extends State<ChatScreen> {
       id: DateTime.now().toString(),
       message: 'Hello!',
       createdAt: DateTime.now(),
-      sendBy: sender.id,
-      sendTo: _chatController.currentUser.id,
+      sentBy: sender.id,
     );
     _chatController.addMessage(message);
   }
